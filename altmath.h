@@ -7,7 +7,8 @@
  * Returns: base^exp
  */
 
-int int_pow(int x, unsigned int pow) {
+int int_pow(int x, unsigned int pow)
+{
     int ret = 1;
     while ( pow != 0 )
     {

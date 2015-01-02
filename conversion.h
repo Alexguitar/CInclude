@@ -3,7 +3,8 @@
 
 //TODO: write header
 
-int bin_to_hex(const char *string, char *hexstr) {
+int bin_to_hex(const char *string, char *hexstr)
+{
 	int i = 0;
 		
 	while(1) {
@@ -32,7 +33,8 @@ int bin_to_hex(const char *string, char *hexstr) {
 
 
 //TODO: does not work properly
-int bin_to_b64(const char *bin, char *b64) {
+int bin_to_b64(const char *bin, char *b64)
+{
 	int i = 0;
 	int j = 0;
 	char pad;
@@ -104,7 +106,8 @@ int bin_to_b64(const char *bin, char *b64) {
  * that is not 0-9 or a-f (case sensitive) is hit upon. Is null-terminated
  * Returns: lenght in chars, 0-indexed
  */
-int hex_to_bin(const char *string, char *binary) {
+int hex_to_bin(const char *string, char *binary)
+{
 	int i = 0;
 	int j = 0;
 	
@@ -141,7 +144,8 @@ int hex_to_bin(const char *string, char *binary) {
  * Returns: 0, regardless
  */
 
-int hex_to_b64(const char *b16, char *b64) {
+int hex_to_b64(const char *b16, char *b64)
+{
 	long i, j, k;
 	char pad = 0;
 	char tmp[3];
@@ -232,7 +236,8 @@ int hex_to_b64(const char *b16, char *b64) {
 	return 0;
 }
 
-int b64_to_bin(const char *b64, char *bin) {
+int b64_to_bin(const char *b64, char *bin)
+{
 	long i = 0;
 	long j = 0;
 	long k;
@@ -284,7 +289,6 @@ int b64_to_bin(const char *b64, char *bin) {
 	}
 	
 	padding:
-	//TODO: padding does not work correctly
 	switch(k) {
 		case 1:
 			bin[i] = tmp[0] << 2;

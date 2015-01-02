@@ -8,7 +8,8 @@
  * Returns: 0, regardless
  */
 
-int single_xor(const char *str, unsigned char key, unsigned char *res) {
+int single_xor(const char *str, unsigned char key, unsigned char *res)
+{
 	long i = 0;
 	while(str[i]) {
 		res[i] = str[i] ^ key;
@@ -20,7 +21,8 @@ int single_xor(const char *str, unsigned char key, unsigned char *res) {
 
 //TODO: write header:
 
-int repeating_xor(const char *str, unsigned char *key, unsigned char *res) {
+int repeating_xor(const char *str, unsigned char *key, unsigned char *res)
+{
 	long i = 0;
 	int j = 0;
 	while(str[i]) {
@@ -41,7 +43,8 @@ int repeating_xor(const char *str, unsigned char *key, unsigned char *res) {
  * Returns: score
  * */
 
-int score(const char *string) {
+int score(const char *string)
+{
 	long i, j, lenght;
 	int score = 0; 
 	int higher = 0;
@@ -66,7 +69,7 @@ int score(const char *string) {
 		}
 	}
 
-	/* use the values from first A-Z scan and fit them to match reference[]*/
+	/* use the values from the A-Z scan and fit them to match reference[]*/
 	//TODO: this loop is obsolete, implement it elsewhere without the use of tmp
 	for(j = 0; j < 12; j++) {
 		occurance[j] = tmp[reference[j] - 'a'];
