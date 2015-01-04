@@ -1,6 +1,8 @@
 #ifndef _CYPHER_H_
 #define _CYPHER_H_
 
+#include <ctype.h>
+#include "altmath.h"
 /* TODO: improve documentation header A.K.A. ↓
  * xor's every char of string with the value key and stores it in result. Result
  * is null-terminated, however a null character may appear earlier in result wh-
@@ -42,6 +44,7 @@ int repeating_xor(const char *str, unsigned char *key, unsigned char *res)
  * Max score: ~845. Min score: -10 000 //TODO: update score list
  * Returns: score
  * */
+//TODO: this could be greatly improved by categorizing all ASCII characters and blowing everything else to shit
 
 int score(const char *string)
 {
@@ -53,7 +56,7 @@ int score(const char *string)
 	const char reference[] = "etaoinshrdlu";
 	long tmp['z' - 'a' + 1] = { 0 };
 	char occurance[12] = { 0 };
-	
+
 	for(i = 0; string[i]; i++) {
 		/* count occurance of A-Z characters (case independent) */
 		if('a' <= tolower(string[i]) && tolower(string[i]) <= 'z') {
@@ -91,15 +94,39 @@ int score(const char *string)
 				score += int_pow(higher, 2);
 			}
 		}
-			
+
 		higher = 0;
 	}
-	
+
 	if(spaces) {
 		if(abs(lenght/spaces-5) < 6) //TODO: there is probably something wrong here
 			score += int_pow(3*(5-abs(lenght/spaces-5)), 2);
 	}
 	return score - int_pow(100*nonlatin/(lenght), 2);
+}
+
+
+
+char attack_single_byte_xor(const char *string)
+{
+	int i;
+	unsigned char key = 0;
+	unsigned char bestkey;
+	int bestscore = 1;
+	int tmpscore;
+	char *tmp = malloc(sizeof(char) * strlen(string));
+
+	do{
+		single_xor(string, key, tmp);
+		tmpscore = score(tmp);
+		if(tmpscore > bestscore) {
+			bestscore = tmpscore;
+			bestkey = key;
+		}
+		key++;
+	} while(key != 0);
+
+	return bestkey;
 }
 
 #endif
