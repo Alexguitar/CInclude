@@ -33,7 +33,7 @@ int divisors(unsigned int number)
 		return 1;
 	if(number < 4)
 		return 2;
-	
+
 	unsigned int i, r, count;
 	count = 0;
 	r = floor(sqrt(number));
@@ -44,7 +44,7 @@ int divisors(unsigned int number)
 	if(r*r == number) 
 		return 2*count -1;
 	return 2*count;
-		
+
 }
 
 #endif

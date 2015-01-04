@@ -6,7 +6,7 @@
 int bin_to_hex(const char *string, char *hexstr)
 {
 	int i = 0;
-		
+
 	while(1) {
 		/* terminate string */
 		if(!string[i]) {
@@ -27,7 +27,7 @@ int bin_to_hex(const char *string, char *hexstr)
 		} else {
 			hexstr[2*i+1] = 'a' + (string[i] & 15u) - 10;
 		}
-		i++;	
+		i++;
 	}
 }
 
@@ -44,15 +44,15 @@ int bin_to_b64(const char *bin, char *b64)
 			pad = 0;
 			break;
 		}
-		
+
 		b64[j] = (bin[i] >> 2);
-		
+
 		if(!bin[i+1]) {
 			b64[j++] = (bin[i] << 4) & ~192u;
 			pad = 1;
 			break;
 		}
-		
+
 		b64[j+1] = ((bin[i] << 4) & ~192u) + (bin[i+1] >> 4);
 		if(!bin[i+2]) {
 			b64[j++] = (bin[i+1] << 2);
@@ -90,7 +90,7 @@ int bin_to_b64(const char *bin, char *b64)
 		}
 		b64[i] = '/';
 		i++;
-	}			
+	}
 	while(pad) {
 		b64[i] = '=';
 		i++;
@@ -98,11 +98,11 @@ int bin_to_b64(const char *bin, char *b64)
 	}
 	b64[i] = '\0';
 	return i-1;
-	
+
 }
 
 /*
- * decrypt base 16 into base 2 (in char wide packs), returns when a character 
+ * decrypt base 16 into base 2 (in char wide packs), returns when a character
  * that is not 0-9 or a-f (case sensitive) is hit upon. Is null-terminated
  * Returns: lenght in chars, 0-indexed
  */
@@ -110,10 +110,10 @@ int hex_to_bin(const char *string, char *binary)
 {
 	int i = 0;
 	int j = 0;
-	
+
 	while(1) {
 		if('0' <= string[i] && string[i] <= '9') {
-			binary[j] = (string[i] - '0') << 4;	
+			binary[j] = (string[i] - '0') << 4;
 		} else
 		if('a' <= string[i] && string[i] <= 'f') {
 			binary[j] = (string[i] - 'a' + 10) << 4;
@@ -125,7 +125,7 @@ int hex_to_bin(const char *string, char *binary)
 
 
 		if('0' <= string[i] && string[i] <= '9') {
-			binary[j] |= string[i] - '0';	
+			binary[j] |= string[i] - '0';
 		} else
 		if('a' <= string[i] && string[i] <= 'f') {
 			binary[j] |= string[i] - 'a' + 10;
@@ -139,7 +139,7 @@ int hex_to_bin(const char *string, char *binary)
 }
 
 /* TODO: make it a sane function, terminate, return, etc.
- * decypts base 16 into base 64. assumes b64 is long enough 
+ * decypts base 16 into base 64. assumes b64 is long enough
  * assumes b16 is null-terminated, does not terminate b64
  * Returns: 0, regardless
  */
@@ -152,7 +152,7 @@ int hex_to_b64(const char *b16, char *b64)
 
 	i = 0;
 	j = 0;
-	
+
 	/* connect 3 4-bits into 2 6-bits for as long as posible */
 	while(1) {
 		/* decypt 3 hex chars and store them in tmp */
@@ -168,8 +168,8 @@ int hex_to_b64(const char *b16, char *b64)
 			}
 			tmp[k] = b16[i] - 'a' + 10;
 			i++;
-			
-			
+
+
 		}
 		//TODO: document
 		/* magical bonding process */
@@ -186,16 +186,16 @@ int hex_to_b64(const char *b16, char *b64)
 		case 1:
 			b64[j] = tmp[0];
 			j++;
-			
+
 			pad = 1;
 			break;
 		case 2:
 			b64[j] = tmp[0] << 2 | tmp[1] >> 2;
 			j++;
-			
+
 			b64[j] = tmp[1] << 4 & ~192u;
 			j++;
-			
+
 			pad = 2;
 			break;
 		default:
@@ -249,7 +249,7 @@ int b64_to_bin(const char *b64, char *bin)
 			if(!b64[j+k]) {
 				goto padding;
 			}
-			
+
 			if('A' <= b64[j+k] && b64[j+k] <= 'Z') {
 				tmp[k] = b64[j+k] - 'A';
 				continue;
@@ -278,16 +278,16 @@ int b64_to_bin(const char *b64, char *bin)
 			}
 		}
 		j += k;
-		
+
 		bin[i] = (tmp[0] << 2) + (tmp[1] >> 4);
 		i++;
 		bin[i] = (tmp[1] << 4) + (tmp[2] >> 2);
 		i++;
 		bin[i] = (tmp[2] << 6) + tmp[3];
 		i++;
-		
+
 	}
-	
+
 	padding:
 	switch(k) {
 		case 1:
@@ -303,7 +303,7 @@ int b64_to_bin(const char *b64, char *bin)
 			bin[i+1] = tmp[1] << 4;
 			bin[i+2] = '\0';
 			return i + 2;
-			
+
 		case 3:
 			bin[i] = (tmp[0] << 2) + (tmp[1] >> 4);
 			bin[i+1] = (tmp[1] << 4) + (tmp[2] >> 2);
@@ -314,11 +314,11 @@ int b64_to_bin(const char *b64, char *bin)
 			bin[i+2] = tmp[3] << 6;
 			bin[i+3] = '\0';
 			return i + 3;
-			
+
 		default:
 			break;
 	}
-	bin[i] = '\0';	
+	bin[i] = '\0';
 	return i;
 }
 
