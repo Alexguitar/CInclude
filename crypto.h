@@ -7,125 +7,161 @@
  * xor's every char of string with the value key and stores it in result. Result
  * is null-terminated, however a null character may appear earlier in result wh-
  * en string[i] and key match
- * Returns: 0, regardless
+ * Returns: lenght
  */
-
-int single_xor(const char *str, unsigned char key, unsigned char *res)
+int single_xor(const char *str, char key, char *res, int lenght)
 {
 	long i = 0;
-	while(str[i]) {
+	while(lenght--) {
 		res[i] = str[i] ^ key;
 		i++;
 	}
 	res[i] = '\0';
-	return 0;
+	return i;
 }
+
+
 
 //TODO: write header:
 
-int repeating_xor(const char *str, unsigned char *key, unsigned char *res)
+int repeating_xor(const char *str, unsigned char *key, unsigned char *res, int lenght)
 {
 	long i = 0;
 	int j = 0;
-	while(str[i]) {
+	while(lenght) {
 		if(!key[j]) {
 			j = 0;
 		}
 		res[i] = str[i] ^ key[j];
 		i++;
 		j++;
+		lenght--;
 	}
 	res[i] = '\0';
 	return 0;
 }
 
-/* TODO: improve reliability, strictness, etc
- * scores the string based on character frequency.
- * Max score: ~845. Min score: -10 000 //TODO: update score list
- * Returns: score
- * */
-//TODO: this could be greatly improved by categorizing all ASCII characters and blowing everything else to shit
+int ENGLISH_FREQUENCY[] = {
+// value is frequency in 10 000 characters
+	/* A */	817,
+	/* B */	149,
+	/* C */	276,
+	/* D */	425,
+	/* E */	1270,
+	/* F */	223,
+	/* G */	202,
+	/* H */	609,
+	/* I */	697,
+	/* J */	15,
+	/* K */	77,
+	/* L */	403,
+	/* M */	241,
+	/* N */	675,
+	/* O */	751,
+	/* P */	193,
+	/* Q */	10,
+	/* R */	599,
+	/* S */	633,
+	/* T */	906,
+	/* U */	278,
+	/* V */	98,
+	/* W */	236,
+	/* X */	15,
+	/* Y */	197,
+	/* Z */	7
+};
+const char etaoin[] = { 'e', 't', 'a', 'o', 'i', 'n',
+			's', 'h', 'r', 'd', 'l', 'u',
+			'c', 'm', 'w', 'f', 'g', 'y',
+			'p', 'b', 'v', 'k', 'j', 'x',
+			'q', 'z' };
 
-int score(const char *string)
+int score(const char *string, int lenght)
 {
-	long i, j, lenght;
-	int score = 0; 
-	int higher = 0;
-	long nonlatin = 0;
-	long spaces = 0;
-	const char reference[] = "etaoinshrdlu";
-	long tmp['z' - 'a' + 1] = { 0 };
-	char occurance[12] = { 0 };
+	int stat[26];
+	int spaces, punct, symbols, numbers;
+	int garbage;
 
-	for(i = 0; string[i]; i++) {
-		/* count occurance of A-Z characters (case independent) */
+	/* initialize current statistic */
+	memset(&stat, 0, 26*sizeof(int));
+	spaces = punct = symbols = numbers = garbage = 0;
+
+	int i;
+	for(i = 0; i < lenght; i++) {
+		/* letters */
 		if('a' <= tolower(string[i]) && tolower(string[i]) <= 'z') {
-			tmp[tolower(string[i]) - 'a'] += 1;
+			stat[tolower(string[i]) - 'a'] += 1;
 		}
-		/* count occurance of spaces */
-		else if(string[i] == ' ' && string[i-1] != ' ') {
-			spaces++;
-		}
-		/* count occurance of special characters */ //TODO: improve the list
-		else if(string[i] != '\'' && ('a' > tolower(string[i]) || tolower(string[i] > 'z'))) {
-			nonlatin++;
+		/* count numbers */
+		else if('0' <= string[i] && string[i] <= '9')
+			continue;
+		else switch(string[i]) {
+			/* spaces */
+			case ' ': case '\n': case '\t':
+				spaces++;
+				break;
+			/* punctioation */
+			case '.': case ',': case '\'': case '\"': case ':':
+			case ';': case '`': case '!': case '?': case '&':
+			case '(': case ')': case '[': case ']': case '{':
+			case '}': case '-': case '|':
+				punct++;
+				break;
+			/* symbols */
+			case '@': case '#': case '$': case '%': case '^':
+			case '*': case '+': case '<': case '>': case '~':
+			case '_': case '=': case '/': case '\\':
+				symbols++;
+				break;
+			/* garbage */
+			default:
+				garbage++;
+				break;
 		}
 	}
-
-	/* use the values from the A-Z scan and fit them to match reference[]*/
-	//TODO: this loop is obsolete, implement it elsewhere without the use of tmp
-	for(j = 0; j < 12; j++) {
-		occurance[j] = tmp[reference[j] - 'a'];
+	/* if tolarance% is garbage, return 0 */
+	int tolerance = 10;
+		if((100 * garbage * tolerance) / lenght >= 100)
+			return 1;
+	int letters = lenght - spaces - punct - symbols - numbers - garbage;
+	/* calculate character frequency per 10 000 chars */
+	/* based on the Bhattacharyya coefficient */
+	for(i = 0; i < 26; i++) {
+		stat[i] = (double) stat[i] / (double) letters * 10000.0;
+//		printf("%c: %d\n", 'a' + i, stat[i] - ENGLISH_FREQUENCY[i]);
 	}
 
-	lenght = i;
-	if(lenght == 0) {
-		return 0;
-	} 
-	for(i = 0; i < 12; i++) {
-		/* find the position of occurance[i] in an ascending list */
-		for(j = 0; j < 12; j++) {
-			if(occurance[i] > occurance[j])
-				higher++;
-		}
-		/* compare the position of occurance[i] to the reference; margin of error = 2*/
-		if(higher >= 12-2-i) { //TODO: verify
-			if(higher-i+1 > 0) {
-				score += int_pow(higher, 2);
-			}
-		}
-
-		higher = 0;
+	/* this stage awards up to 10 000 points */
+	int score = 0;
+	for(i = 0; i < 26; i++) {
+		score += sqrt(ENGLISH_FREQUENCY[i] * stat[i]);
 	}
+	return score;
 
-	if(spaces) {
-		if(abs(lenght/spaces-5) < 6) //TODO: there is probably something wrong here
-			score += int_pow(3*(5-abs(lenght/spaces-5)), 2);
-	}
-	return score - int_pow(100*nonlatin/(lenght), 2);
 }
 
 
-
-char attack_single_byte_xor(const char *string)
+char attack_single_byte_xor(const char *string, int lenght)
 {
 	int i;
 	unsigned char key = 0;
 	unsigned char bestkey;
 	int bestscore = 1;
 	int tmpscore;
-	char *tmp = malloc(sizeof(char) * strlen(string));
+	char *tmp = malloc(sizeof(char) * lenght);
 
 	do{
-		single_xor(string, key, tmp);
-		tmpscore = score(tmp);
+		single_xor(string, key, tmp, lenght);
+		tmpscore = score(tmp, lenght);
+//		printf("__%c:%d\n", key, tmpscore);
 		if(tmpscore > bestscore) {
 			bestscore = tmpscore;
 			bestkey = key;
 		}
+		next:
 		key++;
 	} while(key != 0);
-
+	printf("Key: %c score: %d\n", bestkey, bestscore);
 	return bestkey;
 }
 
