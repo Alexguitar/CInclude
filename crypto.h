@@ -140,7 +140,7 @@ int score(const char *string, int lenght)
 
 }
 
-
+//TODO: for some reason from 6.c a lot of garbage is created with the right key
 char attack_single_byte_xor(const char *string, int lenght)
 {
 	int i;
