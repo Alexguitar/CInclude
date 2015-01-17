@@ -171,7 +171,6 @@ int hex_to_b64(const char *b16, char *b64)
 
 
 		}
-		//TODO: document
 		/* magical bonding process */
 		b64[j] = tmp[0] << 2 | tmp[1] >> 2;
 		j++;
