@@ -47,7 +47,6 @@ double norm_hamming_distance(char *string, long lenght, long keysize)
 		}
 		hamming += hamming_distance(tmp1, tmp2, keysize);
 	}
-	printf("distance: %3d  /  %2d  / %d\n", hamming, keysize, block_num);
 	return (double) hamming / (double) keysize / (double) block_num;
 }
 
