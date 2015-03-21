@@ -3,6 +3,7 @@
 
 
 // WARNING: do _NOT_ try to understand this
+// TODO: get a version that works on chars specifically
 int hamming_weight(int i)
 {
      i = i - ((i >> 1) & 0x55555555);
