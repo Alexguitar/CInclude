@@ -1,16 +1,20 @@
 CC = gcc
-LDFLAGS = -lm -Wall
+LDLIBS = -lm
+CFLAGS= -Wall -Os
+
 SRCS = $(wildcard *.c)
-OBJS = $(patsubst %.c, %.o, $(SRCS))
+OBJS = $(SRCS:.c=.o)
+
+all: lib.o ;
 
 lib.o: $(OBJS)
 	@ld -o $@ -r $(OBJS)
 	@echo Updated: $?
 
 $(OBJS): %.o: %.c
-	@$(CC) -c $< $(LDFLAGS)
+	@$(CC) -c $< $(LDLIBS)
 
 clean:
 	@rm -f $(OBJS)
 
-.PHONY: clean
+.PHONY: clean all phony

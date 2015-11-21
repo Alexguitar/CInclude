@@ -11,14 +11,14 @@ int bin_to_hex(const char *string, char *hexstr)
 			hexstr[2*i] = '\0';
 			return 2*i;
 		}
-		/* deal with first 4 bits */
+		/* deal with most significant 4 bits */
 		if(string[i] / 16 < 10) {
 			/* 358u = binary(11110000) */
 			hexstr[2*i] = '0' + string[i] / 16;
 		} else {
 			hexstr[2*i] = 'a' + string[i] / 16 - 10;
 		}
-		/* deal with last 4 bits */
+		/* deal with least significant 4 bits */
 		if((string[i] & 15u) < 10) {
 			/* 15u = binary(00001111) */
 			hexstr[2*i+1] = '0' + (string[i] & 15u);
